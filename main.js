@@ -5,13 +5,12 @@ const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const path = require('path');
 var ipc = electron.ipcMain;
-const notifier = require('node-notifier');
 const dialog = electron.dialog;
-var mysql = require('mysql');
 var fs = require('fs');
 
 let mainWindow;
 let settings;
+let areaWindow;
 
 function createWindow () {
   mainWindow = new BrowserWindow({width: 800, height: 600});
@@ -35,10 +34,18 @@ function createWindow () {
   });
 }
 
+function areaChoice(){
+  areaWindow = new BrowserWindow({width: 500, height: 500, resizable: false});
+  areaWindow.loadURL('file://' + __dirname + '/areaChoice.html');
+  areaWindow.on('closed', function() {
+    mainWindow = null;
+  });
+}
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 app.on('ready', function(){
   createWindow();
+  areaChoice();
   ipc.on('loadSettings', function(event, arg){
     fs.readFile('info.json', 'utf8', function (err,data) {
     if (err) {
@@ -81,37 +88,12 @@ app.on('ready', function(){
             return console.log(err);
         }
       });
-
     }
   });
 
-  ipc.on('loadWOL', function(event, arg) {
-    console.log(arg);  // prints "ping"
-    var connection = mysql.createConnection({
-      host     : '192.168.0.17',
-      user     : 'root',
-      password : 'Railchta2c',
-      database : 'laravel'
-    });
-    connection.connect(function(err){
-    if(!err) {
-        console.log("Database is connected ... nn");
-    } else {
-        console.log("Error connecting database ... nn");
-        console.log(err);
-    }
-    });
-    var wol = [];
-
-    connection.query('SELECT * FROM devices', function(err, rows, fields) {
-      if (err) throw err;
-
-      wol = rows;
-      console.log(rows);
-      event.sender.send('reply', wol);
-    });
-    connection.end();
-  });
+  ipc.on("areaChoiceDone", function(event, arg){
+    areaWindow.close();
+  })
 });
 
 // Quit when all windows are closed.

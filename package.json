@@ -1,34 +1,33 @@
 {
-  "name": "electron-quick-start",
-  "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "name": "ElectronUI-RPI",
+  "version": "0.5.0",
+  "description": "Application for the screen of the Raspberry Pi",
   "main": "main.js",
   "scripts": {
     "start": "electron main.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/atom/electron-quick-start.git"
+    "url": "git+https://github.com/Thumberd/ElectronUI-RPI.git"
   },
   "keywords": [
     "Electron",
-    "quick",
-    "start",
-    "tutorial"
+    "Raspberry",
+    "Arduino",
+    "GUI",
+    "Home",
+    "Automation"
   ],
-  "author": "GitHub",
+  "author": "Jérémy Albrecht",
   "license": "CC0-1.0",
   "bugs": {
-    "url": "https://github.com/atom/electron-quick-start/issues"
+    "url": "https://github.com/Thumberd/ElectronUI-RPI/issues"
   },
-  "homepage": "https://github.com/atom/electron-quick-start#readme",
+  "homepage": "https://github.com/Thumberd/ElectronUI-RPI",
   "devDependencies": {
     "electron-prebuilt": "^0.36.0"
   },
   "dependencies": {
-    "jquery": "^2.2.2",
-    "mysql": "^2.10.2",
-    "node-mysql": "^0.4.2",
-    "node-notifier": "^4.5.0"
-  }
+    "jquery": "^2.2.2"
+    }
 }
