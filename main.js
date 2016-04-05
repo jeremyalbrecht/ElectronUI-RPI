@@ -7,13 +7,14 @@ const path = require('path');
 var ipc = electron.ipcMain;
 const dialog = electron.dialog;
 var fs = require('fs');
+var zerorpc = require('zerorpc');
 
 let mainWindow;
 let settings;
 let areaWindow;
 
 function createWindow () {
-  mainWindow = new BrowserWindow({width: 800, height: 600});
+  mainWindow = new BrowserWindow({width: 800, height: 600, kiosk: true});
 
   mainWindow.loadURL('file://' + __dirname + '/index.html');
 
@@ -44,8 +45,15 @@ function areaChoice(){
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 app.on('ready', function(){
+  var server = new zerorpc.Server({
+    RFID: function(reply) {
+        areaChoice();
+        reply(null, "OK");
+    }
+  });
+
+  server.bind("tcp://0.0.0.0:4242");  
   createWindow();
-  areaChoice();
   ipc.on('loadSettings', function(event, arg){
     fs.readFile('info.json', 'utf8', function (err,data) {
     if (err) {
