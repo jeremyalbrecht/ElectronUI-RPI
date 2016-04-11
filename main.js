@@ -12,6 +12,7 @@ var zerorpc = require('zerorpc');
 let mainWindow;
 let settings;
 let areaWindow;
+let errorWindow;
 
 function createWindow () {
   mainWindow = new BrowserWindow({width: 800, height: 600, kiosk: true});
@@ -39,8 +40,25 @@ function areaChoice(){
   areaWindow = new BrowserWindow({width: 500, height: 500, resizable: false});
   areaWindow.loadURL('file://' + __dirname + '/areaChoice.html');
   areaWindow.on('closed', function() {
-    mainWindow = null;
+    //areaWindow = null;
   });
+  setTimeout(function(){
+    areaWindow.destroy()
+  }, 20000);
+
+}
+
+function Error(){
+  errorWindow = new BrowserWindow({width: 500, height: 500, resizable: false});
+  errorWindow.loadURL('file://' + __dirname + '/errorRFID.html');
+  errorWindow.on('closed', function() {
+    errorWindow = null;
+  });
+setTimeout(function(){
+  if(errorWindow){
+    errorWindow.close()   
+  }
+}, 5000);
 }
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -49,10 +67,15 @@ app.on('ready', function(){
     RFID: function(reply) {
         areaChoice();
         reply(null, "OK");
+        console.log(BrowserWindow.getAllWindows())
+    },
+    RFIDError: function(reply) {
+        Error();
+        reply(null, "OK");
     }
   });
 
-  server.bind("tcp://0.0.0.0:4242");  
+  server.bind("tcp://0.0.0.0:4242");
   createWindow();
   ipc.on('loadSettings', function(event, arg){
     fs.readFile('info.json', 'utf8', function (err,data) {
