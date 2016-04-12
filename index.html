@@ -120,7 +120,9 @@
          },
          success: function (data) {
            data = JSON.parse(data);
+           var devices = [];
            for (var i in data){
+             devices.push(data[i]);
              if(data[i]['type'] == '3'){
                $('#wolBody').append('<tr id="wol"><td><i class="fa fa-server"></i>' + data[i]['name'] + '</td><td id="wol' + data[i]['id'] + '"></td></tr>');
                ReactDOM.render(React.createElement(wakeOnLan, { id: data[i]['id'], tokenID: token_id, tokenKey: token_key, ip: ip}), document.getElementById('wol' + data[i]['id']));
@@ -130,6 +132,7 @@
                 ReactDOM.render(React.createElement(AlarmBox, { id: data[i]['id'], tokenID: token_id, tokenKey: token_key, ip: ip}), document.getElementById('alarm' + data[i]['id']));
              }
            }
+           ipcRenderer.send('devices', devices);
          }.bind(this),
          error: function (xhr, status, err) {
            console.error(this.props.url, status, err.toString());
@@ -142,7 +145,6 @@
       $(document).ready(function(){
         ipcRenderer.send('loadSettings');
       });
-
     </script>
 </body>
 </html>

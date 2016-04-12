@@ -37,13 +37,9 @@ function createWindow () {
 }
 
 function areaChoice(){
-  areaWindow = new BrowserWindow({width: 500, height: 500, resizable: false});
-  areaWindow.loadURL('file://' + __dirname + '/areaChoice.html');
-  areaWindow.on('closed', function() {
-    //areaWindow = null;
-  });
+  mainWindow.loadURL('file://' + __dirname + '/areaChoice.html');
   setTimeout(function(){
-    areaWindow.destroy()
+    mainWindow.loadURL('file://' + __dirname + '/index.html')
   }, 20000);
 
 }
@@ -56,7 +52,7 @@ function Error(){
   });
 setTimeout(function(){
   if(errorWindow){
-    errorWindow.close()   
+    errorWindow.close()
   }
 }, 5000);
 }
@@ -67,7 +63,6 @@ app.on('ready', function(){
     RFID: function(reply) {
         areaChoice();
         reply(null, "OK");
-        console.log(BrowserWindow.getAllWindows())
     },
     RFIDError: function(reply) {
         Error();
@@ -122,8 +117,21 @@ app.on('ready', function(){
     }
   });
 
+  ipc.on('devices', function(event, arg){
+    settings['devices'] = [];
+    for(var i in arg){
+      settings['devices'].push(arg[i]);
+    }
+    fs.writeFile("info.json", JSON.stringify(settings), function(err) {
+      if(err) {
+          return console.log(err);
+      }
+    });
+    console.log(settings);
+  });
+
   ipc.on("areaChoiceDone", function(event, arg){
-    areaWindow.close();
+    mainWindow.loadURL('file://' + __dirname + '/index.html');
   })
 });
 

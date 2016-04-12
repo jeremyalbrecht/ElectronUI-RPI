@@ -8,10 +8,11 @@
     <title>Raspberry Pi | Choix des zones</title>
 
     <!-- Fonts -->
-    <link href="/home/pi/ElectronUI-RPI/css/font-awesome.min.css" rel='stylesheet' type='text/css'>
-    
+    <link href="css/font-awesome.min.css" rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700" rel='stylesheet' type='text/css'>
+
     <!-- Compiled and minified CSS -->
-    <link rel="stylesheet" href="/home/pi/ElectronUI-RPI/css/materialize.min.css">
+    <link rel="stylesheet" href="css/materialize.min.css">
     <style>
         body {
             font-family: 'Lato';
@@ -25,7 +26,7 @@
   <nav>
     <div class="nav-wrapper">
       <ul class="left">
-        <li><a onclick="Destroy()"><i class="fa fa-arrow-left"></i></a></li>
+        <li><a onclick="Prev()"><i class="fa fa-arrow-left"></i></a></li>
       </ul>
     </div>
   </nav>
@@ -42,10 +43,10 @@
     <!-- Compiled and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.7/react.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.7/react-dom.js"></script>
-    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.15/browser.js"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.15/browser.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.5/marked.min.js"></script>
-    
+
     <script src="js/AlarmLink.js"></script>
     <script>
       window.jQuery = window.$ = require('jquery');
@@ -61,36 +62,20 @@
         token_id = arg['credentials']['id'];
         token_key = arg['credentials']['key'];
 
-        $.ajax({
-          url: "http://" + ip + "/api/v1/devices",
-          method: "GET",
-          headers: {
-           'Token-Id':token_id,
-           'Token-Key':token_key,
-         },
-         success: function (data) {
-           data = JSON.parse(data);
-           for (var i in data){
-             if(data[i]['type'] == '2'){
-               console.log(data[i]);
-               $('#alarm').append('<tr><td>' + data[i]['name'] + '</td><td id="alarm' + data[i]['id'] + '"></td></tr>');
-               ReactDOM.render(React.createElement(AlarmLink, { id: data[i]['id'], tokenID: token_id, tokenKey: token_key, ip: ip}), document.getElementById('alarm' + data[i]['id']));
-             }
-           }
-         }.bind(this),
-         error: function (xhr, status, err) {
-           console.error(this.props.url, status, err.toString());
-         }.bind(this)
-       });
-
-      });
+       for (var i in arg['devices']){
+         if(arg['devices'][i]['type'] == '2'){
+           $('#alarm').append('<tr><td>' + arg['devices'][i]['name'] + '</td><td id="alarm' + arg['devices'][i]['id'] + '"></td></tr>');
+           ReactDOM.render(React.createElement(AlarmLink, { id: arg['devices'][i]['id'], tokenID: token_id, tokenKey: token_key, ip: ip}), document.getElementById('alarm' + arg['devices'][i]['id']));
+         }
+       }
+     });
 
 
       $(document).ready(function(){
         ipcRenderer.send('loadSettings');
       });
 
-      function Destroy(){
+      function Prev(){
         ipcRenderer.send("areaChoiceDone");
       }
     </script>
