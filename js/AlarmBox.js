@@ -15,9 +15,9 @@ var AlarmBox = React.createClass({
       },
       success: function (data) {
         if (data['state'] == "0") {
-          this.setState({ etat: false, color:"green lighten-2", colorSave: "green lighten-2", actual: "Désactivée", action: "Activer", link: "Désactivée"});
+          this.setState({ etat: false, color:"teal", colorSave: "teal", actual: "Désactivée", action: "Activer", link: "Désactivée"});
         } else if (data['state'] == '1') {
-          this.setState({ etat: true, color:"red lighten-2", colorSave: "red lighten-2", actual: "Activée", action: "Désactiver", link: "Activée"});
+          this.setState({ etat: true, color:"teal darken-4", colorSave: "teal darken-4", actual: "Activée", action: "Désactiver", link: "Activée"});
         }
       }.bind(this),
       error: function (xhr, status, err) {

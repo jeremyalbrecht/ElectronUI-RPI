@@ -1,5 +1,6 @@
 'use strict';
 
+
 const electron = require('electron');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
@@ -37,35 +38,26 @@ function createWindow () {
 }
 
 function areaChoice(){
-  mainWindow.loadURL('file://' + __dirname + '/areaChoice.html');
-  setTimeout(function(){
-    mainWindow.loadURL('file://' + __dirname + '/index.html')
-  }, 20000);
-
+  dialog.showMessageBox(mainWindow, {type: 'info', title: 'Alarme changee', buttons: ['Ok', ]});
 }
 
 function Error(){
-  errorWindow = new BrowserWindow({width: 500, height: 500, resizable: false});
-  errorWindow.loadURL('file://' + __dirname + '/errorRFID.html');
-  errorWindow.on('closed', function() {
-    errorWindow = null;
-  });
-setTimeout(function(){
-  if(errorWindow){
-    errorWindow.close()
-  }
-}, 5000);
+  dialog.showErrorBox('Mauvais tag', 'Tag RFID incorrect');
 }
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 app.on('ready', function(){
   var server = new zerorpc.Server({
     RFID: function(reply) {
-        areaChoice();
         reply(null, "OK");
+	areaChoice();
     },
     RFIDError: function(reply) {
         Error();
+        reply(null, "OK");
+    },
+    RFIDDouble: function(reply) {
         reply(null, "OK");
     }
   });

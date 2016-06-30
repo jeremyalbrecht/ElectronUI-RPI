@@ -4,7 +4,7 @@ var wakeOnLan = React.createClass({
   displayName: "wakeOnLan",
 
   getInitialState: function getInitialState() {
-    return { color: "orange lighten-3", text: "Power On" };
+    return { color: "teal", text: "Power On" };
   },
   powerOn: function powerOn(e) {
     $.ajax({
@@ -17,7 +17,7 @@ var wakeOnLan = React.createClass({
       },
       success: function (data) {
         console.log(data);
-        this.setState({ color: "green lighten-1", text: "UP" });
+        this.setState({ color: "teal darken-3", text: "UP" });
       }.bind(this),
       error: function (xhr, status, err) {
         console.error(this.props.url, status, err.toString());
