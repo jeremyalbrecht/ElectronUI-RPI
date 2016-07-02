@@ -4,7 +4,7 @@ var AlarmBox = React.createClass({
   displayName: "AlarmBox",
 
   getInitialState: function getInitialState() {
-    return { etat: "", color:"", actual: "", action: "", link: ""};
+    return { etat: "", color:"", name:""};
   },
   loadState: function loadState() {
     $.post({
@@ -15,14 +15,14 @@ var AlarmBox = React.createClass({
       },
       success: function (data) {
         if (data['state'] == "0") {
-          this.setState({ etat: false, color:"teal", colorSave: "teal", actual: "Désactivée", action: "Activer", link: "Désactivée"});
+          this.setState({ etat: false, color:"green", colorSave: "green"});
         } else if (data['state'] == '1') {
-          this.setState({ etat: true, color:"teal darken-4", colorSave: "teal darken-4", actual: "Activée", action: "Désactiver", link: "Activée"});
+          this.setState({ etat: true, color:"red", colorSave: "red"});
         }
       }.bind(this),
       error: function (xhr, status, err) {
         console.error(this.props.url, status, err.toString());
-        this.setState({ etat: false, color:"red darken-3", colorSave: "red darken-3", actual: "Erreur API", action: err.toString(), link: "Erreur API"});
+        this.setState({ etat: false, color:"red darken-3", colorSave: "red darken-3"});
       }.bind(this)
     });
   },
@@ -34,7 +34,7 @@ var AlarmBox = React.createClass({
     return React.createElement(
         "a",
         { "className" : "waves-effect waves-light btn "+ this.state.color, onClick: this.handleClick},
-        this.state.link
+        this.props.name
       );
   }
 });

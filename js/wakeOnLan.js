@@ -4,7 +4,7 @@ var wakeOnLan = React.createClass({
   displayName: "wakeOnLan",
 
   getInitialState: function getInitialState() {
-    return { color: "teal", text: "Power On" };
+    return { color: "blue", text: "Power On" };
   },
   powerOn: function powerOn(e) {
     $.ajax({
@@ -17,7 +17,6 @@ var wakeOnLan = React.createClass({
       },
       success: function (data) {
         console.log(data);
-        this.setState({ color: "teal darken-3", text: "UP" });
       }.bind(this),
       error: function (xhr, status, err) {
         console.error(this.props.url, status, err.toString());
@@ -26,6 +25,6 @@ var wakeOnLan = React.createClass({
     });
   },
   render: function render() {
-    return React.createElement("a", { "className": "waves-effect waves-orange btn " + this.state.color, onClick: this.powerOn }, React.createElement("i", { "className": "fa fa-power-off left" }), this.state.text);
+    return React.createElement("a", { "className": "waves-effect waves-orange btn " + this.state.color, onClick: this.powerOn }, React.createElement("i", { "className": "fa fa-power-off left" }), this.props.name);
   }
 });

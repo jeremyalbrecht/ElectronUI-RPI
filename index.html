@@ -16,6 +16,8 @@
     <style>
         body {
             font-family: 'Lato';
+            background: url('iotd.jpg') no-repeat center fixed;
+            background-size: cover;
         }
         .fa-btn {
             margin-right: 6px;
@@ -23,11 +25,23 @@
         .fa {
           display: block;
         }
+        .opacity-home{
+          opacity: 0.4;
+        }
+        .alarms{
+          position:absolute;
+          bottom: 0%;
+        }
+        .wol {
+          position: absolute;
+          left: 25%;
+          bottom: 3%;
+        }
     </style>
 </head>
-<body id="app-layout" class="grey darken-5">
-  <nav>
-    <div class="nav-wrapper grey darken-1">
+<body id="app-layout">
+  <nav class="grey darken-1 opacity-home">
+    <div class="nav-wrapper">
       <a href="#" class="brand-logo center title">Raspberry Pi</a>
       <ul class="left">
         <li><a href="options.html"><i class="fa fa-gear"></i></a></li>
@@ -36,56 +50,23 @@
   </nav>
 
   <div class="row">
-    <div class="col s3">
-      <div class="card grey white-text">
+    <div class="alarms">
         <table>
         <tbody id="Alarms">
 
         </tbody>
       </table>
-      </div>
     </div>
 
-     <div class="col s4 m4 l6">
-       <div class="card grey">
-         <div class="card-content white-text">
-           <span class="card-title">Wake On Lan</span>
-           <table>
-            <thead>
-              <tr>
-                  <th data-field="id">Name</th>
-                  <th data-field="pushon"></th>
-              </tr>
-            </thead>
+     <div class="wol" id="wolBody">
 
-            <tbody id="wolBody">
-            </tbody>
-          </table>
-         </div>
-       </div>
-      </div>
+    </div>
 
-      <div class="col s3">
-        <div class="card grey lighten-3">
-          <div class="card-content black-text">
-            <span class="card-title">Temperature</span>
-            <table>
-             <thead>
-               <tr>
-                   <th data-field="id">Name</th>
-                   <th data-field="value">Value</th>
-               </tr>
-             </thead>
-
-             <tbody id="TemperatureBox">
-               <tr>
-                 <td><i class="fa fa-leaf"></i>Salon</td>
-                 <td id="">12.45</td>
-               </tr>
-             </tbody>
-           </table>
-          </div>
-        </div>
+      <div class="temperature">
+        <table>
+          <tbody id="Temperature">
+          </tbody>
+      </table>
       </div>
     <!-- Compiled and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.7/react.js"></script>
@@ -97,9 +78,10 @@
 
     <script src="js/AlarmBox.js"></script>
     <script src="js/wakeOnLan.js"></script>
+    <script src="js/TemperatureBox.js"></script>
     <script>
       window.jQuery = window.$ = require('jquery');
-      
+
 	var date, hours, minute, seconds;
 	function updateHour(){
 	date = new Date();
@@ -133,12 +115,16 @@
            for (var i in data){
              devices.push(data[i]);
              if(data[i]['type'] == '3'){
-               $('#wolBody').append('<tr id="wol"><td><i class="fa fa-server"></i>' + data[i]['name'] + '</td><td id="wol' + data[i]['id'] + '"></td></tr>');
-               ReactDOM.render(React.createElement(wakeOnLan, { id: data[i]['id'], tokenID: token_id, tokenKey: token_key, ip: ip}), document.getElementById('wol' + data[i]['id']));
+               $('#wolBody').append('<span id="wol' + data[i]['id'] + '"></span>');
+               ReactDOM.render(React.createElement(wakeOnLan, { id: data[i]['id'], tokenID: token_id, tokenKey: token_key, ip: ip, name: data[i]['name']}), document.getElementById('wol' + data[i]['id']));
              }
              else if (data[i]['type'] == '2'){
-                $('#Alarms').append('<tr><td>' + data[i]['name'] + '</td><td id="alarm' + data[i]['id'] +'"></td></tr>');
-                ReactDOM.render(React.createElement(AlarmBox, { id: data[i]['id'], tokenID: token_id, tokenKey: token_key, ip: ip}), document.getElementById('alarm' + data[i]['id']));
+                $('#Alarms').append('<tr><td id="alarm' + data[i]['id'] +'"></td></tr>');
+                ReactDOM.render(React.createElement(AlarmBox, { id: data[i]['id'], tokenID: token_id, tokenKey: token_key, ip: ip, name: data[i]['name']}), document.getElementById('alarm' + data[i]['id']));
+             }
+             else if(data[i]['type'] == '4'){
+               $('#Temperature').append('<tr><td id="temp' + data[i]['id'] +'"></td></tr>');
+               ReactDOM.render(React.createElement(TemperatureBox, { id: data[i]['id'], tokenID: token_id, tokenKey: token_key, ip: ip, name: data[i]['name']}), document.getElementById('temp' + data[i]['id']));
              }
            }
            ipcRenderer.send('devices', devices);
